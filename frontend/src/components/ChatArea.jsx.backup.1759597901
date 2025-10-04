@@ -4,7 +4,6 @@ import { FiSend, FiVideo, FiMoreVertical } from 'react-icons/fi'
 import { messagesAPI } from '../services/api'
 import { useAuth } from '../contexts/AuthContext'
 import { useSocket } from '../contexts/SocketContext'
-import VideoCall from './VideoCall'
 
 const ChatContainer = styled.div`
   display: flex;
@@ -188,7 +187,6 @@ function ChatArea({ channel }) {
   const messagesEndRef = useRef(null)
   const { user } = useAuth()
   const { socket } = useSocket()
-  const [showVideoCall, setShowVideoCall] = useState(false)
 
   useEffect(() => {
     if (channel) {
@@ -294,7 +292,12 @@ function ChatArea({ channel }) {
   }
 
   const startVideoCall = () => {
-    setShowVideoCall(true)
+    if (socket) {
+      // Emit video call event
+      socket.emit('start_video_call', {
+        channel_id: channel.id
+      })
+    }
   }
 
   if (!channel) {
@@ -309,13 +312,6 @@ function ChatArea({ channel }) {
 
   return (
     <ChatContainer>
-      {showVideoCall && (
-        <VideoCall 
-          channel={channel}
-          onEndCall={() => setShowVideoCall(false)}
-        />
-      )}
-
       <ChatHeader>
         <ChannelInfo>
           <ChannelName>#{channel.name}</ChannelName>
