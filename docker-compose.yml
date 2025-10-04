@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  teams-clone:
+    build: .
+    ports:
+      - "3001:3001"  # Frontend
+      - "5000:5000"  # Backend API
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    volumes:
+      - ./logs:/app/logs
+      - ./backend/data:/app/backend/data
+    networks:
+      - teams-network
+
+networks:
+  teams-network:
+    driver: bridge
+
+volumes:
+  teams-data:
+    driver: local
