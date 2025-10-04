@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import { useAuth } from '../contexts/AuthContext'
 import Sidebar from './Sidebar'
 import ChatArea from './ChatArea'
-import UserProfile from './UserProfile'
 import { channelsAPI } from '../services/api'
 
 const DashboardContainer = styled.div`
@@ -51,25 +50,11 @@ const LogoutButton = styled.button`
   }
 `
 
-const ProfileButton = styled.button`
-  background: none;
-  border: none;
-  color: white;
-  cursor: pointer;
-  font-size: 14px;
-  text-decoration: underline;
-
-  &:hover {
-    color: #f0f0f0;
-  }
-`
-
 function Dashboard() {
   const { user, logout } = useAuth()
   const [channels, setChannels] = useState([])
   const [selectedChannel, setSelectedChannel] = useState(null)
   const [loading, setLoading] = useState(true)
-  const [showProfile, setShowProfile] = useState(false)
 
   useEffect(() => {
     loadChannels()
@@ -117,10 +102,6 @@ function Dashboard() {
 
   return (
     <DashboardContainer>
-      {showProfile && (
-        <UserProfile user={user} onClose={() => setShowProfile(false)} />
-      )}
-
       <Sidebar 
         channels={channels}
         selectedChannel={selectedChannel}
@@ -138,9 +119,6 @@ function Dashboard() {
             <LogoutButton onClick={logout}>
               Logout
             </LogoutButton>
-            <ProfileButton onClick={() => setShowProfile(true)}>
-              Profile
-            </ProfileButton>
           </UserInfo>
         </Header>
         
